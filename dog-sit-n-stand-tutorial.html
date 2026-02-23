@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scratch Tutorial: AI Dog – Sit & Stand!</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #fff8f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(135deg, #ff6b35, #f7c59f);
+      color: white;
+      text-align: center;
+      padding: 40px 20px 30px;
+      border-bottom: 6px solid #e05a2b;
+    }
+    header h1 {
+      font-size: 2.4em;
+      margin: 0 0 8px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    header p {
+      font-size: 1.15em;
+      margin: 0;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-block;
+      background: white;
+      color: #ff6b35;
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-weight: bold;
+      font-size: 0.95em;
+      margin-top: 12px;
+    }
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 30px 24px 60px;
+    }
+    .intro-box {
+      background: #fff3cd;
+      border-left: 6px solid #ffc107;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 30px;
+      font-size: 1.05em;
+    }
+    .intro-box strong { color: #c77c00; }
+
+    h2 {
+      color: #e05a2b;
+      border-bottom: 3px dotted #f7c59f;
+      padding-bottom: 6px;
+      margin-top: 40px;
+    }
+    h3 { color: #555; margin-top: 24px; }
+
+    .step {
+      background: white;
+      border: 2px solid #ffe0cc;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+    }
+    .step-num {
+      display: inline-block;
+      background: #ff6b35;
+      color: white;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      font-weight: bold;
+      margin-right: 10px;
+      font-size: 1em;
+    }
+    .step h3 {
+      display: inline;
+      margin: 0;
+      font-size: 1.1em;
+      color: #333;
+    }
+    .step p { margin: 10px 0 0; }
+
+    .block {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin: 2px 3px;
+      color: white;
+      font-family: monospace;
+    }
+    .block-event   { background: #ffab19; }
+    .block-looks   { background: #9966ff; }
+    .block-ai      { background: #5cb85c; }
+
+    .code-box {
+      background: #f0f0f0;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-family: monospace;
+      font-size: 0.95em;
+      line-height: 1.8;
+    }
+    .code-box .line { display: block; margin: 2px 0; }
+
+    .tip {
+      background: #e8f5e9;
+      border-left: 5px solid #4caf50;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 0.97em;
+    }
+    .tip::before { content: "💡 Tip: "; font-weight: bold; color: #2e7d32; }
+
+    .warning {
+      background: #fff3e0;
+      border-left: 5px solid #ff9800;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 0.97em;
+    }
+    .warning::before { content: "⚠️ Watch out: "; font-weight: bold; color: #e65100; }
+
+    .fun-fact {
+      background: #e3f2fd;
+      border-left: 5px solid #2196f3;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 0.97em;
+    }
+    .fun-fact::before { content: "🧠 Fun Fact: "; font-weight: bold; color: #1565c0; }
+
+    .challenge {
+      background: #fce4ec;
+      border: 2px solid #f48fb1;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .challenge h3 { color: #c2185b; margin-top: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    th {
+      background: #ff6b35;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #ffe0cc;
+      background: white;
+    }
+    tr:nth-child(even) td { background: #fff8f4; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #aaa;
+      font-size: 0.9em;
+      border-top: 2px solid #ffe0cc;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="font-size:3em;">🐶</div>
+  <h1>AI Dog: Sit & Stand!</h1>
+  <p>A Scratch Tutorial using Artificial Intelligence</p>
+  <div class="badge">⭐ Ages 7–12 &nbsp;|&nbsp; Beginner–Intermediate</div>
+</header>
+
+<main>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    <strong>What will you build?</strong><br>
+    In this project, you'll make a <strong>smart virtual dog</strong> that watches you through the camera. When you <strong>sit down</strong>, the dog sits! When you <strong>stand up</strong>, the dog stands! It uses real <strong>Artificial Intelligence (AI)</strong> to recognise your movements. How cool is that? 🎉
+  </div>
+
+  <!-- WHAT YOU NEED -->
+  <h2>🎒 What You Need</h2>
+  <table>
+    <tr><th>Item</th><th>Details</th></tr>
+    <tr><td>💻 Computer or tablet</td><td>With a working camera (webcam)</td></tr>
+    <tr><td>🌐 Internet connection</td><td>To load the AI model</td></tr>
+    <tr><td>🐱 Scratch 3</td><td>scratch.mit.edu — free!</td></tr>
+    <tr><td>📁 The project file</td><td>dog-sit-n-stand.sb3</td></tr>
+  </table>
+
+  <!-- HOW IT WORKS -->
+  <h2>🤖 How Does the AI Work?</h2>
+  <p>This project uses a special tool called <strong>Teachable Machine</strong> (made by Google). Someone already taught the computer what "sit" and "stand" sound like — by giving it lots of examples using a microphone, just like teaching a real dog!</p>
+  <p>When you run the project, Scratch loads this AI model and uses your microphone to check what you might be saying at every moment. It then tells Scratch: <em>"The person said sit!"</em> or <em>"The person said stand!"</em> — and the dog reacts instantly.</p>
+
+  <div class="fun-fact">
+    AI learns from <strong>examples</strong>, just like you learn from practice. The more examples it sees, the smarter it gets!
+  </div>
+
+  <!-- OPENING THE PROJECT -->
+  <h2>📂 Opening the Project</h2>
+  <div class="step">
+    <span class="step-num">1</span><h3>Open Scratch</h3>
+    <p>Go to <strong>https://playground.esteem.education/tinkering/</strong> in your web browser.</p>
+  </div>
+  <div class="step">
+    <span class="step-num">2</span><h3>Load the Project File</h3>
+    <p>Click <strong>File → Load from your computer</strong> and choose the file <strong>dog-sit-n-stand.sb3</strong>. The project will open with a dog sprite already set up for you.</p>
+  </div>
+  <div class="step">
+    <span class="step-num">3</span><h3>Allow Microphone Access</h3>
+    <p>Your browser will ask if Scratch can use your microphone for voice input. Click <strong>Allow</strong>. The AI needs to hear you clearly to work!</p>
+  </div>
+
+  <div class="tip">Make sure you are in a quiet room so the microphone can pick up your voice clearly.</div>
+
+  <!-- UNDERSTANDING THE CODE -->
+  <h2>🔍 Understanding the Code</h2>
+  <p>Let's look at the blocks that make the magic happen. Click on the <strong>dog sprite</strong> (the picture of the dog) and look at the code in the middle of the screen.</p>
+
+  <p>You will see <strong>three groups</strong> of blocks:</p>
+
+  <!-- SCRIPT 1 -->
+  <div class="step">
+    <span class="step-num">A</span><h3>Setting Up (When the Green Flag is Clicked)</h3>
+    <div class="code-box">
+      <span class="block block-event">When <svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16" style="vertical-align:middle; display:inline-block; margin: 0 1px;"><line x1="2" y1="0" x2="2" y2="16" stroke="white" stroke-width="2"/><polygon points="2,1 13,5 2,9" fill="#4caf50" stroke="white" stroke-width="0.5"/></svg> clicked</span><br>
+      <span class="block block-looks">show</span><br>
+      <span class="block block-ai">use AI model [Teachable Machine URL]</span><br>
+      <span class="block block-ai">start microphone sampling</span><br>
+      <span class="block block-looks">switch costume to [standing-dog]</span>
+    </div>
+    <p>This group runs <strong>as soon as you press the green flag</strong>. Here's what each block does:</p>
+    <ul>
+      <li><strong>show</strong> — makes the dog visible on screen.</li>
+      <li><strong>use AI model</strong> — loads the trained AI from Teachable Machines URL so Scratch knows what "sit" and "stand" sound like.</li>
+      <li><strong>start audio sampling</strong> — turns on your microphone and starts listening to tiny slices of sound — thousands of them every second. These slices are called samples. It's like taking lots of super-fast snapshots, but for sound instead of pictures.</li>
+      <li><strong>switch costume to standing-dog</strong> — the dog starts in a standing position.</li>
+    </ul>
+  </div>
+
+  <!-- SCRIPT 2 -->
+  <div class="step">
+    <span class="step-num">B</span><h3>When the AI Hears "Sit"</h3>
+    <div class="code-box">
+      <span class="block block-ai">When AI hears [Sit]</span><br>
+      <span class="block block-looks">switch costume to [sitting-dog]</span>
+    </div>
+    <p>Whenever the AI model decides that you've commanded the dog to <strong>sit</strong>, Scratch changes the dog's costume to the <strong>sitting dog</strong> picture. The dog sits down — just like you ordered it to!</p>
+  </div>
+
+  <!-- SCRIPT 3 -->
+  <div class="step">
+    <span class="step-num">C</span><h3>When the AI Hears "Stand"</h3>
+    <div class="code-box">
+      <span class="block block-ai">When AI detects [Stand]</span><br>
+      <span class="block block-looks">switch costume to [standing-dog]</span>
+    </div>
+    <p>Whenever the AI model decides that you've commanded the dog to <strong>stand</strong>, Scratch switches the display to the <strong>standing dog</strong> costume. The dog stands up again!</p>
+  </div>
+
+  <div class="fun-fact">
+    The dog has <strong>two costumes</strong> — one for sitting and one for standing. Switching costumes is how Scratch animates the characters (known as <strong>sprites</strong>) shown onstage!
+  </div>
+
+  <!-- RUNNING THE PROJECT -->
+  <h2>▶️ Let's Run It!</h2>
+  <div class="step">
+    <span class="step-num">1</span><h3>Press the Green Flag</h3>
+    <p>Click the big green flag button at the top of the screen. The dog will appear, and the camera will turn on.</p>
+  </div>
+  <div class="step">
+    <span class="step-num">2</span><h3>Stand Up!</h3>
+    <p>Make sure your microphone is turned on and the room is relatively quiet. Say "stand" clearly into the mic. The dog should be standing too!</p>
+  </div>
+  <div class="step">
+    <span class="step-num">3</span><h3>Sit Down!</h3>
+    <p>Now say "sit". Watch the dog — it should sit down too!</p>
+  </div>
+  <div class="step">
+    <span class="step-num">4</span><h3>Try Again and Again</h3>
+    <p>Say "stand", "sit", "stand", "sit", "sit", "stand", and so on. The dog follows you every time (or at least most of the time, depending on how accurately the A.I. model makes decisions). You are controlling a virtual dog with your voice! 🐾</p>
+  </div>
+
+  <div class="warning">If the dog doesn't react, check that your mic is on and your voice can be heard clearly. Make sure you are in a relatively quiet room.</div>
+
+  <!-- KEY CONCEPTS -->
+  <h2>🧩 Key Scratch Concepts You Learned</h2>
+  <table>
+    <tr><th>Concept</th><th>What It Means</th></tr>
+    <tr><td>🟠 Events</td><td>Blocks that <em>start</em> when something happens, like clicking the flag or the AI detecting a pose</td></tr>
+    <tr><td>🟣 Costumes</td><td>Different images for a sprite — switching them creates animation</td></tr>
+    <tr><td>🟢 AI Extension</td><td>Extra blocks that let Scratch connect to AI tools like Teachable Machine</td></tr>
+    <tr><td>📷 Audio Sampling</td><td>Using the microphone to gather audio input over and over, very quickly. The AI looks at these samples and asks: "Does this sound like 
+          one of the words I learned?" If enough samples in a row sound like "stand", the AI decides that it heard the word "stand" and it moves the dog according to your command. 
+          That's why you sometimes need to speak clearly and wait a moment — the AI is collecting enough samples to be really sure it heard you correctly before it acts!</td></tr>
+  </table>
+
+  <!-- CHALLENGES -->
+  <h2>🚀 Challenge Yourself!</h2>
+
+  <div class="challenge">
+    <h3>⭐ Easy: Add a Sound</h3>
+    <p>Can you make the dog <strong>bark</strong> when it sits down? Look in the <strong>Sound</strong> blocks category and try adding a <em>play sound</em> block to the "Sit" script.</p>
+  </div>
+
+  <div class="challenge">
+    <h3>⭐⭐ Medium: Change the Background</h3>
+    <p>Go to the <strong>Stage</strong> (the white area) and add a fun backdrop — like a park or a living room — so your dog has a proper home!</p>
+  </div>
+
+  <div class="challenge">
+    <h3>⭐⭐⭐ Hard: Add a New Language</h3>
+    <p>What if you could create a new AI model that recognizes "Sit" and "Stand" in another language, like <strong>Mandarin Chinese</strong> or <strong>French</strong>?</p> 
+    <p>Visit <strong>teachablemachine.withgoogle.com</strong>, create an audio project and train a new model that understands "sit" and "stand" in another language yourself.</p> 
+    <p>Once you've trained and tested the model, upload it into a <strong>shareable URL</strong>. Then replace the model used in the Scratch code with the model you've just trained and uploaded!</p>
+  </div>
+
+  <!-- WHAT IS AI -->
+  <h2>💬 Let's Talk About AI</h2>
+  <p>The AI in this project was <strong>trained</strong> by feeding it many audio clips of people saying "sit" and "stand". The more examples it hears, the better it gets at telling them apart. This type of AI is called <strong>audio classification</strong> — it classifies (sorts) sounds into corresponding words.</p>
+
+  <div class="fun-fact">
+    You just used voice recognition AI — the same technology that powers Siri, Google Assistant, and Amazon Alexa! These systems are trained on millions of voice recordings so they can understand many different accents, speeds, and tones of voice.
+  </div>
+
+  <!-- GLOSSARY -->
+  <h2>📖 Glossary (Word List)</h2>
+  <table>
+    <tr><th>Word</th><th>Meaning</th></tr>
+    <tr><td><strong>Sprite</strong></td><td>A character or object in Scratch (like the dog)</td></tr>
+    <tr><td><strong>Costume</strong></td><td>A different look or image for a sprite</td></tr>
+    <tr><td><strong>Event</strong></td><td>Something that happens that starts a block of code</td></tr>
+    <tr><td><strong>AI Model</strong></td><td>A trained AI that has learned to recognise things</td></tr>
+    <tr><td><strong>Teachable Machine</strong></td><td>A free tool by Google to train your own AI</td></tr>
+    <tr><td><strong>Audio Sampling</strong></td><td>Checking the voice input from a microphone very quickly, many times per second</td></tr>
+    <tr><td><strong>Classification</strong></td><td>Sorting things into categories (e.g., "sitting" or "standing")</td></tr>
+  </table>
+
+  <div class="tip">Show your friends and family your project — you built something with real AI! 🌟</div>
+
+</main>
+
+<footer>
+  🐶 Dog Sit &amp; Stand — Scratch + AI Tutorial &nbsp;|&nbsp; Happy Coding!
+</footer>
+
+</body>
+</html>
