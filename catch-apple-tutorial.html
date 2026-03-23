@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catch the Falling Apples! – Scratch + AI Tutorial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --yellow:   #FFD95A;
+      --coral:    #FF6B6B;
+      --teal:     #2D6A6A;
+      --mint:     #A8E6CF;
+      --white:    #FFFEF7;
+      --dark:     #1E2A2A;
+      --orange:   #F4845F;
+      --gold:     #F0B429;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--white);
+      color: var(--dark);
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* ── BACK NAV ── */
+    .top-nav {
+      background: var(--teal);
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-nav a {
+      color: var(--yellow);
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.15s;
+    }
+    .top-nav a:hover { opacity: 0.75; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--yellow);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 56px 24px 80px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 30%, rgba(255,107,107,0.18) 0%, transparent 60%),
+                  radial-gradient(circle at 20% 80%, rgba(45,106,106,0.10) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-emoji {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 16px;
+      animation: bounce 2.4s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      45%      { transform: translateY(-18px); }
+      65%      { transform: translateY(-8px); }
+    }
+    .hero h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.2rem, 7vw, 3.8rem);
+      color: var(--teal);
+      line-height: 1.1;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 span { color: var(--coral); }
+    .hero-sub {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--teal);
+      opacity: 0.85;
+      margin-top: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+      position: relative;
+      z-index: 1;
+    }
+    .badge {
+      background: white;
+      color: var(--teal);
+      border: 2px solid var(--teal);
+      border-radius: 99px;
+      padding: 4px 16px;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    .badge-coral { background: var(--coral); color: white; border-color: var(--coral); }
+
+    .hero-wave {
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 100%; line-height: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 24px 100px;
+    }
+
+    /* ── SECTION HEADINGS ── */
+    .section {
+      margin-bottom: 52px;
+      animation: fadeUp 0.5s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.85rem;
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 3px dashed var(--yellow);
+    }
+
+    h3 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.25rem;
+      color: var(--orange);
+      margin: 22px 0 8px;
+    }
+
+    p { margin-bottom: 12px; font-size: 1rem; font-weight: 600; color: #333; }
+
+    /* ── WHAT YOU'LL BUILD BOX ── */
+    .intro-box {
+      background: var(--mint);
+      border: 3px solid var(--teal);
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+      box-shadow: 5px 5px 0 var(--teal);
+    }
+    .intro-box strong { color: var(--teal); }
+
+    /* ── REQUIREMENTS TABLE ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    thead tr { background: var(--teal); color: white; }
+    thead th { padding: 12px 16px; text-align: left; font-family: 'Fredoka One', cursive; font-weight: 400; font-size: 1rem; }
+    tbody tr:nth-child(odd)  { background: #f4fdf8; }
+    tbody tr:nth-child(even) { background: white; }
+    tbody td { padding: 11px 16px; border-bottom: 2px solid #e0ede8; vertical-align: top; }
+    tbody td:first-child { font-size: 1.3rem; width: 52px; text-align: center; }
+
+    /* ── HOW IT WORKS TABLE ── */
+    .how-table thead tr { background: var(--coral); }
+    .how-table tbody tr:nth-child(odd)  { background: #fff5f5; }
+    .how-table tbody tr:nth-child(even) { background: white; }
+    .first-column {
+      width: 40%; /* Relative width in percentage */
+    }
+    .second-column {
+      width: 60%; /* Relative width in percentage */
+    }
+    .how-table-header {
+      text-align: center;
+    }
+
+    /* ── NUMBERED STEPS ── */
+    .steps { list-style: none; counter-reset: step; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      background: white;
+      border: 2px solid #e0ede8;
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: 3px 3px 0 #d0e8de;
+    }
+    .steps li::before {
+      content: counter(step);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: white;
+      background: var(--teal);
+      border-radius: 50%;
+      min-width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .steps li strong { color: var(--teal); }
+    .steps li .step-body { font-size: 0.95rem; font-weight: 600; color: #333; line-height: 1.6; }
+
+    /* ── CODE BLOCKS ── */
+    .code-block {
+      background: #1E2A2A;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin: 14px 0;
+      border-left: 5px solid var(--yellow);
+      overflow-x: auto;
+    }
+    .code-block pre {
+      color: #A8E6CF;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      white-space: pre;
+    }
+    .code-block pre .kw  { color: var(--yellow); font-weight: bold; }
+    .code-block pre .val { color: #FFB3C6; }
+    .code-block pre .cmt { color: #7aa; font-style: italic; }
+
+    /* ── SCRIPT PANELS (A / B / C) ── */
+    .script-panel {
+      border-radius: 18px;
+      border: 3px solid var(--teal);
+      overflow: hidden;
+      margin: 24px 0;
+      box-shadow: 4px 4px 0 var(--teal);
+    }
+    .script-panel-header {
+      background: var(--teal);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .script-panel-header .label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      background: var(--yellow);
+      color: var(--teal);
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .script-panel-header h3 {
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    .script-panel-body { padding: 20px 22px; background: white; }
+    .script-panel-body p { margin-bottom: 8px; }
+    .script-panel-body ul { padding-left: 20px; margin: 8px 0; }
+    .script-panel-body ul li { margin-bottom: 6px; font-size: 0.95rem; font-weight: 600; color: #333; }
+    .script-panel-body ul li strong { color: var(--teal); }
+
+    /* ── CALLOUT BOXES ── */
+    .callout {
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin: 18px 0;
+      border-left: 5px solid;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .callout-title { font-family: 'Fredoka One', cursive; font-size: 1.05rem; margin-bottom: 6px; }
+    .callout-yellow { background: #FFFBE6; border-color: var(--gold); }
+    .callout-yellow .callout-title { color: #7a5c00; }
+    .callout-mint   { background: #F0FBF5; border-color: var(--mint); }
+    .callout-mint .callout-title { color: var(--teal); }
+    .callout-coral  { background: #FFF0EE; border-color: var(--coral); }
+    .callout-coral .callout-title { color: #c0392b; }
+
+    /* ── DOWNLOAD LINK FOR CODE FILE ── */
+    .no-underline {
+      text-decoration: none;
+    }
+
+    /* ── RUN IT STEPS ── */
+    .run-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .run-step {
+      background: var(--yellow);
+      border: 3px solid var(--teal);
+      border-radius: 16px;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 3px 3px 0 var(--teal);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--teal);
+    }
+    .run-step .run-num {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      color: var(--coral);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .run-step .run-emoji { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+
+    /* ── CHALLENGE CARDS ── */
+    .challenges { display: flex; flex-direction: column; gap: 16px; }
+    .challenge {
+      border-radius: 16px;
+      padding: 20px 22px;
+      border: 3px solid var(--teal);
+      box-shadow: 4px 4px 0 var(--teal);
+    }
+    .challenge-easy   { background: #D4F5A2; }
+    .challenge-medium { background: #D1ECF1; }
+    .challenge-hard   { background: #FFE5E5; }
+    .challenge-super  { background: #EDE0FF; }
+    .challenge h3 { margin-top: 0; color: var(--teal); }
+    .challenge p  { margin-bottom: 0; font-size: 0.95rem; }
+
+    /* ── CONCEPTS TABLE ── */
+    .concepts-table thead tr { background: var(--orange); }
+
+    /* ── GLOSSARY ── */
+    .glossary dt {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      color: var(--teal);
+      margin-top: 14px;
+    }
+    .glossary dd {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #444;
+      margin-left: 20px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--teal);
+      color: white;
+      text-align: center;
+      padding: 36px 24px;
+    }
+    footer .footer-brand {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: var(--yellow);
+      margin-bottom: 8px;
+    }
+    footer p { color: rgba(255,255,255,0.75); font-size: 0.9rem; }
+
+    /* ── TILT PHOTO STRIP ── */
+    .tilt-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .tilt-card {
+      border-radius: 18px;
+      border: 3px solid var(--teal);
+      overflow: hidden;
+      box-shadow: 4px 4px 0 var(--teal);
+      background: white;
+      text-align: center;
+    }
+    .tilt-card img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .tilt-card .tilt-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      padding: 10px 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .tilt-card.tilt-left   { border-color: #c0392b; box-shadow: 4px 4px 0 #c0392b; }
+    .tilt-card.tilt-left   .tilt-label { background: #FFE5E5; color: #c0392b; }
+    .tilt-card.tilt-center { border-color: var(--teal); }
+    .tilt-card.tilt-center .tilt-label { background: var(--mint); color: var(--teal); }
+    .tilt-card.tilt-right  { border-color: #6a3db8; box-shadow: 4px 4px 0 #6a3db8; }
+    .tilt-card.tilt-right  .tilt-label { background: #EDE0FF; color: #6a3db8; }
+    .ai-bar {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 3px 12px;
+      border-radius: 99px;
+    }
+    .tilt-left  .ai-bar { background: #c0392b; color: white; }
+    .tilt-center .ai-bar { background: var(--teal); color: white; }
+    .tilt-right  .ai-bar { background: #6a3db8; color: white; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .run-steps { grid-template-columns: 1fr 1fr; }
+      h2 { font-size: 1.5rem; }
+      .tilt-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Back nav -->
+<nav class="top-nav">
+  <a href="https://jennylimhk.github.io/AI-TeachableMachine/">← Back to All Tutorials</a>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <span class="hero-emoji">🍎</span>
+  <h1>Catch the <span>Falling Apples!</span></h1>
+  <p class="hero-sub">A Scratch Game Tutorial using Artificial Intelligence + Your Body</p>
+  <div class="hero-badges">
+    <span class="badge badge-coral">⭐ Ages 7–12</span>
+    <span class="badge">🎮 Scratch 3</span>
+    <span class="badge">🤖 AI / Teachable Machine</span>
+    <span class="badge">📷 Webcam</span>
+    <span class="badge">Beginner – Intermediate</span>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:50px;">
+      <path d="M0,25 C180,60 360,0 540,25 C720,50 900,0 1080,25 C1260,50 1380,10 1440,25 L1440,50 L0,50 Z" fill="#FFFEF7"/>
+    </svg>
+  </div>
+</header>
+
+<!-- Main content -->
+<main class="container">
+
+  <!-- What you'll build -->
+  <div class="intro-box">
+    <strong>🎯 What Will You Build?</strong><br>
+    In this project, you'll play a Scratch game where <strong>YOU are the controller</strong> — no keyboard needed! Tilt your body <strong>left</strong> or <strong>right</strong> to slide a bowl across the screen and catch apples falling from the sky. A webcam watches you and uses real <strong>Artificial Intelligence (AI)</strong> to figure out which way you're leaning. Catch red apples for 1 point, or snag a golden apple for 2 points! You have <strong>60 seconds</strong> — how high can you score? 🏆
+  </div>
+
+  <!-- Section 1: What you need -->
+  <section class="section">
+    <h2>🎒 What You Need</h2>
+    <table>
+      <thead><tr><th></th><th>Item</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>💻</td><td><strong>Computer or tablet</strong></td><td>With a working webcam (built-in laptop cameras work great!)</td></tr>
+        <tr><td>🌐</td><td><strong>Internet connection</strong></td><td>To load the AI model from Teachable Machine</td></tr>
+        <tr><td>🐱</td><td><strong>Scratch 3</strong></td><td>Open <a href="https://playground.esteem.education/tinkering/" target="_blank" style="color:var(--teal);font-weight:800;">playground.esteem.education/tinkering/</a> — free!</td></tr>
+        <tr><td>📁</td><td><strong>The project file</strong></td><td>Catch-Red-Yellow-Apple-Tilt.sb3</td></tr>
+        <tr><td>🏃</td><td><strong>Room to move!</strong></td><td>You'll be leaning left and right — make sure you have a little space</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 2: How the AI works -->
+  <section class="section">
+    <h2>🤖 How Does the AI Work?</h2>
+    <p>This project uses a clever tool called <strong>Teachable Machine</strong> (made by Google). Someone already trained a computer to recognise when you tilt <strong>Left</strong>, tilt <strong>Right</strong>, or hold your head <strong>straight (Nothing)</strong> — by showing it lots of examples through a webcam, just like teaching a pet a new trick!</p>
+    <p>When you run the project, Scratch loads this AI model and uses your camera to take tiny snapshots of you — many times every second. Each snapshot is called a <strong>sample</strong>. The AI looks at each sample and asks: <em>"Is this person leaning left, right, or sitting still?"</em> When it is confident enough, it tells Scratch which way to move the bowl.</p>
+
+    <div class="callout callout-yellow">
+      <div class="callout-title">💡 Fun Fact</div>
+      AI learns from <strong>examples</strong>, just like you learn from practice. The Teachable Machine model in this game was trained on hundreds of images of someone tilting their heads. The more varied examples it saw, the better it got at telling directions apart!
+    </div>
+
+    <p>Here's what the AI sees! These screenshots show the Teachable Machine model in action — notice how it gives a <strong>100% confidence score</strong> for the correct pose each time:</p>
+    <div class="tilt-strip">
+      <div class="tilt-card tilt-left">
+        <img src="images/head-left.png" alt="Head tilted left — AI detects Left at 100%"/>
+        <div class="tilt-label">
+          ⬅️ Tilt Left
+          <span class="ai-bar">AI: Left 100%</span>
+        </div>
+      </div>
+      <div class="tilt-card tilt-center">
+        <img src="images/head-center.png" alt="Head straight — AI detects Nothing at 100%"/>
+        <div class="tilt-label">
+          😐 Head Straight
+          <span class="ai-bar">AI: Nothing 100%</span>
+        </div>
+      </div>
+      <div class="tilt-card tilt-right">
+        <img src="images/head-right.png" alt="Head tilted right — AI detects Right at 100%"/>
+        <div class="tilt-label">
+          ➡️ Tilt Right
+          <span class="ai-bar">AI: Right 100%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Opening the project -->
+  <section class="section">
+    <h2>📂 Opening the Project</h2>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <strong>Open Scratch</strong><br>
+          Go to <a href="https://playground.esteem.education/tinkering/" target="_blank" style="color:var(--teal);font-weight:800;">playground.esteem.education/tinkering/</a> in your web browser. This special version of Scratch has the Teachable Machine AI blocks already built in!
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Grab the Project File</strong><br>
+          Download the ZIP file containing the Scratch code for this project and extract the code file (.sb3).
+          <div>
+            <a href="code/catch-apples-with-head-tilt.zip" class="no-underline">⬇️ .sb3 ZIP</a>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Load the Project File</strong><br>
+          Click <strong>File → Load from your computer</strong> and choose <strong>Catch-Red-Yellow-Apple-Tilt.sb3</strong>. The project will open with a bowl, red apples, and golden apples already set up for you.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Allow Camera Access</strong><br>
+          If it doesn't yet have permission, your browser will ask if Scratch can use your webcam. Click <strong>Allow</strong>. The AI needs to see you to know which way you're tilting! Make sure you have good lighting and sit where the camera can see your upper body clearly.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Press the Green Flag and Play!</strong><br>
+          Click the big green flag ▶ at the top of the screen. The game starts immediately — lean left and right to move your bowl and catch those apples before the 60 seconds run out!
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-mint">
+      <div class="callout-title">💡 Tip: Position Yourself Well</div>
+      Sit about an arm's length from your webcam. Make sure your shoulders and upper body are visible in the camera. Tilt with your head towards your left or right shoulder — small head tilts may not be detected reliably! 
+    </div>
+  </section>
+
+  <!-- Section 4: How the game works -->
+  <section class="section">
+    <h2>🎮 How the Game Works</h2>
+    <p>Before we look at the code, let's understand what happens when you play:</p>
+    <table class="how-table">
+      <thead>
+        <tr>
+          <th class="first-column how-table-header">🏃 You Do This...</th>
+          <th class="second-column how-table-header">💻 The Game Does This...</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Tilt to the <strong>Left</strong></td><td>The bowl slides left across the screen</td></tr>
+        <tr><td>Tilt to the <strong>Right</strong></td><td>The bowl slides right across the screen</td></tr>
+        <tr><td>Sit with your head straight (Nothing)</td><td>The bowl stays still</td></tr>
+        <tr><td>Catch a red apple 🍎</td><td>Score goes up by <strong>1 point</strong> + a sound plays!</td></tr>
+        <tr><td>Catch a golden apple ✨</td><td>Score goes up by <strong>2 points</strong> + a coin sound!</td></tr>
+        <tr><td>Timer reaches <strong>60 seconds</strong></td><td>Game Over screen appears — game stops!</td></tr>
+        <tr><td>Miss an apple</td><td>It disappears at the bottom and reappears randomly at the top</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 5: Understanding the code -->
+  <section class="section">
+    <h2>🔍 Understanding the Code</h2>
+    <p>Let's look at the code blocks for each sprite. Click on a sprite in Scratch (the bowl, a red apple, etc.) and look at the blocks in the middle of the screen. You will see several groups of blocks — here's what each one does!</p>
+
+    <!-- Bowl -->
+    <h3>🥣 The Bowl Sprite</h3>
+    <p>The bowl has the most code — it handles setup, the timer, and reacting to the AI camera.</p>
+
+    <div class="script-panel">
+      <div class="script-panel-header">
+        <div class="label">A</div>
+        <h3>Setting Up — When the Green Flag is Clicked</h3>
+      </div>
+      <div class="script-panel-body">
+        <div class="code-block"><pre>
+<span class="kw">When</span> ▶ clicked
+  <span class="kw">use AI model</span> [<span class="val">Teachable Machine URL</span>]
+  <span class="kw">turn video</span> [<span class="val">on</span>]
+  <span class="kw">set video transparency to</span> [<span class="val">100</span>]
+  <span class="kw">start sampling</span>
+  <span class="kw">go to x:</span>[<span class="val">0</span>] <span class="kw">y:</span>[<span class="val">-140</span>]
+  <span class="kw">set</span> [<span class="val">direction</span>] <span class="kw">to</span> [<span class="val">0</span>]
+  <span class="kw">forever</span>
+    <span class="cmt">← keep checking which way to move</span></pre></div>
+        <p>This group runs <strong>as soon as you press the green flag</strong>. Here's what each block does:</p>
+        <ul>
+          <li><strong>use AI model</strong> — loads the trained AI from the Teachable Machine website so Scratch knows what Left, Right, and Nothing look like.</li>
+          <li><strong>turn video on</strong> — switches on the webcam.</li>
+          <li><strong>set video transparency to 100</strong> — makes the camera feed invisible on-screen (you don't see yourself, but the AI still can!).</li>
+          <li><strong>start sampling</strong> — the AI begins watching your movements, taking many snapshots every second.</li>
+          <li><strong>go to x:0 y:−140</strong> — places the bowl at the centre of the screen near the bottom.</li>
+          <li><strong>set direction to 0</strong> — the bowl starts off not moving in any direction.</li>
+          <li><strong>forever loop</strong> — keeps checking which direction to move the bowl, over and over.</li>
+        </ul>
+        <div class="callout callout-yellow">
+          <div class="callout-title">🔁 What is a Forever Loop?</div>
+          A forever loop is a set of instructions that repeats over and over — without stopping! Without it, the bowl would only check your tilt once and then freeze. The loop makes the game feel smooth and responsive.
+        </div>
+      </div>
+    </div>
+
+    <div class="script-panel">
+      <div class="script-panel-header">
+        <div class="label">B</div>
+        <h3>Moving the Bowl — Reacting to Your Tilt</h3>
+      </div>
+      <div class="script-panel-body">
+        <div class="code-block"><pre>
+<span class="kw">forever</span>
+  <span class="kw">if</span> [<span class="val">direction = 1</span>] <span class="kw">then</span>
+    <span class="kw">change x by</span> [<span class="val">8</span>]       <span class="cmt">← move right</span>
+  <span class="kw">if</span> [<span class="val">direction = -1</span>] <span class="kw">then</span>
+    <span class="kw">change x by</span> [<span class="val">-8</span>]      <span class="cmt">← move left</span>
+  <span class="kw">if</span> [<span class="val">direction = 0</span>] <span class="kw">then</span>
+    <span class="cmt">← stay still</span></pre></div>
+        <p>Inside the forever loop, the game constantly checks the <strong>direction</strong> variable and moves the bowl accordingly. The bowl moves 8 steps at a time — big enough to feel snappy, small enough to stay controlled.</p>
+        <div class="callout callout-yellow">
+          <div class="callout-title">📦 What is a Variable?</div>
+          A variable is like a labelled box that stores a number or word. The <strong>direction</strong> variable holds −1 (Left), 0 (Nothing), or 1 (Right). Whenever the AI sees you tilt, it updates this box — and the forever loop immediately responds!
+        </div>
+      </div>
+    </div>
+
+    <div class="script-panel">
+      <div class="script-panel-header">
+        <div class="label">C</div>
+        <h3>Reacting to the AI — When Model Matches</h3>
+      </div>
+      <div class="script-panel-body">
+        <div class="code-block"><pre>
+<span class="kw">When AI model matches</span> [<span class="val">Left</span>]
+  <span class="kw">set</span> [<span class="val">direction</span>] <span class="kw">to</span> [<span class="val">-1</span>]
+
+<span class="kw">When AI model matches</span> [<span class="val">Right</span>]
+  <span class="kw">set</span> [<span class="val">direction</span>] <span class="kw">to</span> [<span class="val">1</span>]
+
+<span class="kw">When AI model matches</span> [<span class="val">Nothing</span>]
+  <span class="kw">set</span> [<span class="val">direction</span>] <span class="kw">to</span> [<span class="val">0</span>]</pre></div>
+        <p>These three separate scripts listen for what the AI camera sees. The AI model has three classes it can recognise: <strong>Left</strong>, <strong>Right</strong>, and <strong>Nothing</strong>. Each time it detects one, it immediately updates the direction variable. The forever loop in Script B then picks that up and moves the bowl!</p>
+      </div>
+    </div>
+
+    <div class="script-panel">
+      <div class="script-panel-header">
+        <div class="label">D</div>
+        <h3>The Timer</h3>
+      </div>
+      <div class="script-panel-body">
+        <div class="code-block"><pre>
+<span class="kw">When</span> ▶ clicked
+  <span class="kw">set</span> [<span class="val">Timer</span>] <span class="kw">to</span> [<span class="val">0</span>]
+  <span class="kw">forever</span>
+    <span class="kw">wait</span> [<span class="val">1</span>] <span class="kw">seconds</span>
+    <span class="kw">change</span> [<span class="val">Timer</span>] <span class="kw">by</span> [<span class="val">1</span>]
+    <span class="kw">if</span> [<span class="val">Timer ≥ 60</span>] <span class="kw">then</span>
+      <span class="kw">broadcast</span> [<span class="val">gameOver</span>]
+      <span class="kw">stop all</span></pre></div>
+        <ul>
+          <li><strong>Set Timer to 0</strong> — resets the clock each new game.</li>
+          <li><strong>Every second, add 1 to the Timer</strong> — counts up to 60.</li>
+          <li><strong>When Timer reaches 60</strong> — broadcasts "gameOver" and stops everything.</li>
+        </ul>
+        <div class="callout callout-mint">
+          <div class="callout-title">📢 What is a Broadcast?</div>
+          A broadcast is like a loudspeaker announcement in Scratch. When the bowl broadcasts <strong>"gameOver"</strong>, every sprite that is listening for that message wakes up and reacts. The Game Over screen hears it and makes itself visible — that's how the end screen appears!
+        </div>
+      </div>
+    </div>
+
+    <!-- Red Apple -->
+    <h3>🍎 The Red Apple Sprite</h3>
+
+    <div class="script-panel">
+      <div class="script-panel-header">
+        <div class="label">E</div>
+        <h3>Falling Down</h3>
+      </div>
+      <div class="script-panel-body">
+        <div class="code-block"><pre>
+<span class="kw">When</span> ▶ clicked
+  <span class="kw">forever</span>
+    <span class="kw">change y by</span> [<span class="val">-5</span>]          <span class="cmt">← fall downward</span>
+    <span class="kw">if</span> [<span class="val">touching edge?</span>] <span class="kw">then</span>
+      <span class="kw">go to random position</span>
+      <span class="kw">set y to</span> [<span class="val">180</span>]           <span class="cmt">← reset to top</span></pre></div>
+        <p>Every loop, the apple moves 5 steps downward (<strong>change y by −5</strong>). If it reaches the bottom edge of the screen without being caught, it teleports to a random X position at the top (y = 180) and starts falling again.</p>
+      </div>
+    </div>
+
+    <div class="script-panel">
+      <div class="script-panel-header">
+        <div class="label">F</div>
+        <h3>Getting Caught</h3>
+      </div>
+      <div class="script-panel-body">
+        <div class="code-block"><pre>
+<span class="kw">When</span> ▶ clicked
+  <span class="kw">set</span> [<span class="val">Score</span>] <span class="kw">to</span> [<span class="val">0</span>]
+  <span class="kw">forever</span>
+    <span class="kw">if</span> [<span class="val">touching Bowl?</span>] <span class="kw">then</span>
+      <span class="kw">play sound</span> [<span class="val">Collect</span>]
+      <span class="kw">change</span> [<span class="val">Score</span>] <span class="kw">by</span> [<span class="val">1</span>]
+      <span class="kw">go to random position</span>
+      <span class="kw">set y to</span> [<span class="val">180</span>]</pre></div>
+        <ul>
+          <li><strong>Set Score to 0</strong> — resets the score at the start of each game.</li>
+          <li><strong>If touching Bowl</strong> — checks every frame whether the apple is touching the bowl sprite.</li>
+          <li><strong>Play sound "Collect"</strong> — makes the satisfying catch sound!</li>
+          <li><strong>Change Score by 1</strong> — adds 1 point to the score.</li>
+          <li><strong>Reset to top</strong> — the apple reappears at a new random position so you can catch more.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Golden Apple -->
+    <h3>✨ The Golden Apple Sprite</h3>
+    <p>The golden apple works almost identically to the red apple — it falls, resets at the bottom, and can be caught. The one exciting difference: when caught, it plays a <strong>Coin</strong> sound and adds <strong>2 points</strong> instead of 1. It's the jackpot fruit!</p>
+    <div class="callout callout-yellow">
+      <div class="callout-title">🌟 Design Tip</div>
+      Why does the golden apple give 2 points? Because it's rarer and more valuable! In games, different items have different rewards to make things more exciting and strategic. Can you think of a third apple type you could add?
+    </div>
+
+    <!-- Game Over -->
+    <h3>📋 The Game Over Screen</h3>
+    <p>This sprite is simple but important. It has just two scripts:</p>
+    <div class="code-block"><pre>
+<span class="kw">When</span> ▶ clicked  →  <span class="kw">hide</span>          <span class="cmt">← invisible during the game</span>
+<span class="kw">When I receive</span> [<span class="val">gameOver</span>]  →  <span class="kw">show</span>   <span class="cmt">← appears when time runs out</span></pre></div>
+    <p>When the game starts, this sprite hides itself. When the bowl broadcasts "gameOver", this sprite receives the message and shows itself — the end screen pops up!</p>
+  </section>
+
+  <!-- Section 6: Let's run it -->
+  <section class="section">
+    <h2>▶️ Let's Play It!</h2>
+    <div class="run-steps">
+      <div class="run-step">
+        <span class="run-num">1</span>
+        <span class="run-emoji">🚩</span>
+        Press the <strong>Green Flag</strong> to start
+      </div>
+      <div class="run-step">
+        <span class="run-num">2</span>
+        <span class="run-emoji">📷</span>
+        Let the camera see your <strong>upper body</strong> clearly
+      </div>
+      <div class="run-step">
+        <span class="run-num">3</span>
+        <span class="run-emoji">⬅️</span>
+        Tilt your head <strong>left</strong> to move the bowl left
+      </div>
+      <div class="run-step">
+        <span class="run-num">4</span>
+        <span class="run-emoji">➡️</span>
+        Tilt your head<strong>right</strong> to move the bowl right
+      </div>
+      <div class="run-step">
+        <span class="run-num">5</span>
+        <span class="run-emoji">🍎</span>
+        Catch red apples for <strong>1 point</strong>
+      </div>
+      <div class="run-step">
+        <span class="run-num">6</span>
+        <span class="run-emoji">✨</span>
+        Catch golden apples for <strong>2 points!</strong>
+      </div>
+    </div>
+    <div class="callout callout-coral">
+      <div class="callout-title">🔧 Troubleshooting</div>
+      If the bowl doesn't move, check that your browser has permission to access your camera. Make sure your head, neck, shoulders and upper chest are visible. Good lighting helps the AI see you more clearly!
+    </div>
+  </section>
+
+  <!-- Section 7: Concepts -->
+  <section class="section">
+    <h2>🧩 Key Scratch Concepts You Learned</h2>
+    <table class="concepts-table">
+      <thead><tr><th>Concept</th><th>What It Means in This Game</th></tr></thead>
+      <tbody>
+        <tr><td>🟠 <strong>Events</strong></td><td>Scripts that start when something happens — like clicking the flag or the AI detecting a pose</td></tr>
+        <tr><td>🔁 <strong>Forever Loop</strong></td><td>Keeps the bowl moving and apples falling every single frame, non-stop</td></tr>
+        <tr><td>📦 <strong>Variables</strong></td><td>Stores the Score, Timer, and direction so they can change as you play</td></tr>
+        <tr><td>❓ <strong>If / Condition</strong></td><td>Checks which way the bowl should move, or whether an apple has been caught</td></tr>
+        <tr><td>📢 <strong>Broadcast</strong></td><td>Sends a "gameOver" signal that triggers the end screen sprite</td></tr>
+        <tr><td>🤖 <strong>AI / Machine Learning</strong></td><td>A trained model recognises your body position through the webcam — no keyboard needed!</td></tr>
+        <tr><td>🎲 <strong>Random Position</strong></td><td>Apples appear at a random X spot each time, so you never know where the next one drops</td></tr>
+        <tr><td>🎭 <strong>Sprites</strong></td><td>Each character or object in the game (bowl, apples, end screen) is its own sprite with its own code</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 8: Challenges -->
+  <section class="section">
+    <h2>🚀 Challenge Yourself!</h2>
+    <div class="challenges">
+      <div class="challenge challenge-easy">
+        <h3>⭐ Easy — Change the Speed</h3>
+        <p>Find the blocks that say <strong>change y by −5</strong> (for the falling apples) and <strong>change x by 8</strong> (for the bowl). Try making the apples fall faster, or the bowl move slower. How does it change how hard the game is?</p>
+      </div>
+      <div class="challenge challenge-medium">
+        <h3>⭐⭐ Medium — Add a Third Apple</h3>
+        <p>Duplicate one of the apple sprites and change its colour to green. Make it give <strong>3 points</strong> when caught. You'll need to update the score change block from 1 to 3 in the catch script!</p>
+      </div>
+      <div class="challenge challenge-hard">
+        <h3>⭐⭐⭐ Hard — Add a Bad Item</h3>
+        <p>Add a rotten apple or a bomb that you must <em>not</em> catch! If the bowl touches it, use <strong>change Score by −2</strong> to subtract points. This makes the game much more challenging — you'll have to dodge as well as catch!</p>
+      </div>
+      <div class="challenge challenge-super">
+        <h3>🤖 Super Challenge — Train Your Own AI Model</h3>
+        <p>Go to <a href="https://teachablemachine.withgoogle.com" target="_blank" style="color:var(--teal);font-weight:800;">teachablemachine.withgoogle.com</a> and train a <strong>new model</strong> with your own poses — maybe "arms up" and "arms down" instead of left and right, or even a completely different type of movement! Replace the model URL in the Scratch code with your new one and see what happens.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 9: Let's talk about AI -->
+  <section class="section">
+    <h2>💬 Let's Talk About AI</h2>
+    <p>The AI in this project was <strong>trained</strong> by showing it many images of someone's head tilting left, tilting right, and held up straight. It learned to tell these actions apart just from the shape of the body. This type of AI is called <strong>pose classification</strong> — it classifies (sorts) body positions into categories.</p>
+    <p>You just used the same kind of AI technology that powers <strong>video game motion controls</strong>, <strong>fitness tracking apps</strong>, and even <strong>sign language recognition systems</strong>! These systems are trained on thousands or millions of examples so they can work reliably for all sorts of different people and body shapes.</p>
+    <div class="callout callout-mint">
+      <div class="callout-title">🌍 Real-World AI</div>
+      AI that recognises body movements is used in physiotherapy (to check whether patients are doing exercises correctly), in sports coaching (to analyse an athlete's technique), and in accessibility tools (to let people control computers with gestures instead of a keyboard). You're learning the same ideas that real engineers use every day!
+    </div>
+  </section>
+
+  <!-- Section 10: Glossary -->
+  <section class="section">
+    <h2>📖 Glossary — Words to Know</h2>
+    <dl class="glossary">
+      <dt>Sprite</dt><dd>A character or object in Scratch, like the bowl or an apple.</dd>
+      <dt>Variable</dt><dd>A labelled box that stores information, like a score or direction number.</dd>
+      <dt>Forever Loop</dt><dd>A set of blocks that repeats over and over without stopping.</dd>
+      <dt>Broadcast</dt><dd>A message sent to all sprites at once, like a game-wide announcement.</dd>
+      <dt>If / Condition</dt><dd>A question the code asks — the answer is always yes or no — and it runs certain blocks depending on the answer.</dd>
+      <dt>AI (Artificial Intelligence)</dt><dd>A computer program that can learn from examples, like recognising whether you're tilting left or right.</dd>
+      <dt>Teachable Machine</dt><dd>A free tool by Google that lets you train a simple AI model using your camera, microphone, or images.</dd>
+      <dt>Sampling</dt><dd>Taking many small snapshots (of your body or voice) very quickly so the AI always has fresh information to work with.</dd>
+      <dt>Pose Classification</dt><dd>A type of AI that looks at body positions in images and sorts them into categories, like Left, Right, or Nothing.</dd>
+      <dt>Random</dt><dd>Chosen by chance — like where an apple appears when it resets at the top of the screen.</dd>
+    </dl>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-brand">🍎 Catch the Falling Apples — Scratch + AI Tutorial</div>
+  <p>Part of the <a href="https://jennylimhk.github.io/AI-TeachableMachine/" style="color:var(--yellow);font-weight:800;">Jenny AI Upskilling Website</a> &nbsp;|&nbsp; Happy Coding! 🌟</p>
+</footer>
+
+</body>
+</html>
